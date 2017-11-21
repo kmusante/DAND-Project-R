@@ -30,7 +30,7 @@ library(reshape2)
 loans<- read.csv("prosperLoanData.csv")
 
 ```
-#  Loans, Bankers and Delinquencies by Ken Musante, DAND Student
+# Loans, Bankers and Delinquencies by Ken Musante, DAND Student
 ========================================================
 For my project I chose the 'prosperLoanData'.  I am in the 
 financial services industry and have worked for three different
@@ -56,8 +56,10 @@ surprisingly high number of charged-off loans--perhaps something to look at?
 
 ```{r echo=FALSE, LoanCount_Status}
 #get feel for loan status
-ggplot(aes(x=LoanStatus, color=LoanStatus), data=subset(loans, !is.na(LoanStatus)))+
+ggplot(aes(x=LoanStatus, color=LoanStatus), 
+       data=subset(loans, !is.na(LoanStatus)))+
   geom_bar(na.rm = TRUE, fill='red')+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   ggtitle('Loan Count by Status')
 
 #surprisingly high number of charged-off loans--perhaps something to look at?
@@ -83,12 +85,13 @@ grid.arrange(p1, p2, ncol=1)
 
 ```
 
-Look at what Charge-offs look like
+Look at what Charge-offs look like by amount
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, ChargedoffFreqpoly}
 
-ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'))+
-  geom_freqpoly()+
+ggplot(aes(x=LP_GrossPrincipalLoss), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
+  geom_histogram()+
   ggtitle('Number of Loans by $ amount charged-Off')
 # looks like most loan losses are under $5,000
 ```
@@ -135,7 +138,7 @@ Looks like most borrowers did not have an investment from 'friends'
 ggplot(aes(x=InvestmentFromFriendsCount), data=loans)+
   geom_histogram()+
   xlim(0,100)+
-  ylim(0,50)+
+  ylim(0,12)+
   ggtitle('Loan Count by Investment from Friends')
 
 # Not many received an investment from friends
@@ -152,14 +155,14 @@ ggplot(aes(x=Investors), data=loans)+
 # I wonder if 'investor' loans perform better??
 ```
 
-It appears Stated Monthly Income was not tracked very closely.
+Lots of indivdiauls did not state their mo. income.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, StatedMonthlyIncome}
 ggplot(aes(x=StatedMonthlyIncome), data=loans)+
-  geom_bar()+
-  xlim(0,10)+
-  ylim(0,300)
-  ggtitle('Number of Loans by Stated Monthly Income')
+  geom_histogram()+
+  xlim(0,100000)+
+  scale_y_log10()+
+  ggtitle('Number(Log10) of Loans by Stated Monthly Income')
 
 # Looks like Stated Monthly Income was not Tracked.
 ```
@@ -186,6 +189,7 @@ ggplot(aes(x=BorrowerAPR), data=loans)+
 # Yields look enormously high!!
 
 ```
+
 Interesting to see the Return expected with so many Charge-offs
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, EstimatedReturn}
@@ -205,6 +209,7 @@ Check to see if Significant Percentage are not employed
 ggplot(aes(x=EmploymentStatus), 
        data=subset(loans, !is.na(EmploymentStatus)))+
   geom_bar(na.rm = TRUE)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
   ggtitle('Loan Count by EmploymentStatus')
 
 # not many borrowers are unemployed
@@ -254,12 +259,35 @@ ggplot(aes(x=LP_GrossPrincipalLoss),
 
 ```
 
-Listing Categories=The category of the listing that the borrower selected when posting their listing: 0 - Not Available, 1 - Debt Consolidation, 2 - Home Improvement, 3 - Business, 4 - Personal Loan, 5 - Student Use, 6 - Auto, 7- Other, 8 - Baby&Adoption, 9 - Boat, 10 - Cosmetic Procedure, 11 - Engagement Ring, 12 - Green Loans, 13 - Household Expenses, 14 - Large Purchases, 15 - Medical/Dental, 16 - Motorcycle, 17 - RV, 18 - Taxes, 19 - Vacation, 20 - Wedding Loans
+### Listing Categories
+The category of the listing that the borrower selected when posting their listing: 
+  0 - Not Available, 
+  1 - Debt Consolidation, 
+  2 - Home Improvement, 
+  3 - Business, 
+  4 - Personal Loan, 
+  5 - Student Use, 
+  6 - Auto, 
+  7 - Other, 
+  8 - Baby&Adoption, 
+  9 - Boat, 
+  10 - Cosmetic Procedure, 
+  11 - Engagement Ring, 
+  12 - Green Loans, 
+  13 - Household Expenses, 
+  14 - Large Purchases, 
+  15 - Medical/Dental, 
+  16 - Motorcycle, 
+  17 - RV, 
+  18 - Taxes, 
+  19 - Vacation, 
+  20 - Wedding Loans
 
 Not surprisingly, Debt Consolodations have a high number of charge-offs
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, ListingCategory}
-ggplot(aes(x=ListingCategory..numeric.), data=subset(loans, LoanStatus=='Chargedoff'))+
+ggplot(aes(x=ListingCategory..numeric.), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_histogram()+
   ggtitle('Number of Charge-off Loans by Listing Category')
 
@@ -267,10 +295,11 @@ ggplot(aes(x=ListingCategory..numeric.), data=subset(loans, LoanStatus=='Charged
 
 ```
 
-Not surprisingly the number of charge-offs are greater with newly employed individuals
+Not surprisingly the number of charge-offs are greater with newly employed
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, Chargeoff_EmploymentsStatusDuration}
-ggplot(aes(x=EmploymentStatusDuration), data=subset(loans, LoanStatus=='Chargedoff'))+
+```{r echo=FALSE, message=FALSE, warning=FALSE, C-off_EmploymentsStatusDur}
+ggplot(aes(x=EmploymentStatusDuration), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_histogram()+
   ggtitle('Number of Charge-offs vs the Employment Status Duration in Months')
 
@@ -281,7 +310,8 @@ ggplot(aes(x=EmploymentStatusDuration), data=subset(loans, LoanStatus=='Chargedo
 Even zero delinquencies in the past 7 years did not keep Charge-offs at bay.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, DelinquenciesLast7Years}
-ggplot(aes(x=DelinquenciesLast7Years), data=subset(loans, LoanStatus=='Chargedoff'))+
+ggplot(aes(x=DelinquenciesLast7Years), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_histogram()+
   ggtitle('Number of Charge-offs vs Number of Delinquences Last 7 Years')
 
@@ -292,7 +322,8 @@ ggplot(aes(x=DelinquenciesLast7Years), data=subset(loans, LoanStatus=='Chargedof
 As absolute value, amount of individual charge-offs mostly below $10,000
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, LP_GrossPrincipalLoss}
-ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'))+
+ggplot(aes(x=LP_GrossPrincipalLoss), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_histogram()+
   ggtitle('Number of Charge-offs vs Gross Principal Loss')
 
@@ -375,21 +406,22 @@ as well as variables with too many NA's such as:
   
 The area that I wanted to focus on were losses.  The Loans have a high 
 charge-off rate and are priced very high. Certainly the borrowAPR tells us the 
-rates are high.  I thought the high charge-offs might
-be due to the Great Recession given the period identitified in the summary below.
-Unfortunately, there is not sufficient data points to tell us when the charge-offs
-began or the dates loans were charged-off so although we can speculate the 
-charge-offs were related to the Great Recession, we have no modeling to base 
-that upon.
+rates are high.  I thought the high charge-offs might be due to the Great 
+Recession given the period identitified in the summary below.
+Unfortunately, there is not sufficient data points to tell us when the 
+charge-offs began or the dates loans were charged-off so although we can 
+speculate the charge-offs were related to the Great Recession, we have 
+no modeling to base that upon.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, LoanOriginationQuarterTable}
 head(loans$LoanOriginationQuarter)
 
 ```
-Given the above and number of variables, I did not yet need to create any additional variables 
-but I did subset the loans portfolio quite often so I was only looking that portion of
-loans which were charged-off.  Next I will attempt to evaluate the variables most closely
-correlated with charge-offs.
+Given the above and number of variables, I did not yet need to create any 
+additional variables but I did subset the loans portfolio quite often so 
+I was only looking that portion of loans which were charged-off.  Next I 
+will attempt to evaluate the variables most closely correlated with 
+charge-offs.
 
 # Bivariate Plots Section
 
@@ -397,12 +429,36 @@ I expect higher delinquencies and charge-offs at the higher funded ratios.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, LoanStatus_FundedRatio}
 ggplot(aes(x=PercentFunded, y=LoanStatus), data=loans)+
-  geom_point(alpha=1/20)+
+  geom_jitter(alpha=1/30)+
   ggtitle('Loan Status by % Funded')
-#I would have expected more delinquencies & charge-offs at higher funded ratio
+# I would have expected more delinquencies&charge-offs at higher funded ratio
+# most loans funded at 100%
 
 ```
-Lack of significant correlation between LP_GrossPrincipalLoss and Percent Funded.  
+
+When excluding the loans funded at 100%, the boxplot
+does not seem to indicate a visual correlation to the
+Charge-offs.  The Charge-offs average is approx. 80%
+which is just below the 'Current' and 'Completed' 
+categories.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, FundedRatio-Loanstat}
+ggplot(aes(x=LoanStatus, 
+            y=PercentFunded), 
+        data = subset(loans,PercentFunded<1)) +
+  geom_jitter( alpha = .3)  + 
+  geom_boxplot( alpha = .5,color = 'blue')+ 
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 4)  +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ggtitle('% Funded by Loan Status')
+```
+
+When viewing correlation coefficient there is not a significant
+correlation between LP_GrossPrincipalLoss & Percent Funded.  
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, PercentFundedCorr}
 cor.test(loans$LP_GrossPrincipalLoss, (1-loans$PercentFunded))
@@ -430,41 +486,53 @@ Investment from Friend Amount not strongly correlated
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, CreditSxore_FriendInvestment}
 cor.test(loans$LP_GrossPrincipalLoss, loans$InvestmentFromFriendsAmount)
-# Wonder if credit scores are similar for borrowers w/out investmentFromFriends?
+# Wonder if crdt scres are similar for borrowers w/out investmentFromFriends?
 
 ```
 
 
-See if there is a visual correlation between Loan Status and Employment Duration
+See if there is a visual correlation between Loan Status & Employment Duration
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, LoanStatus_EmploymentDuration}
 ggplot(aes(x=EmploymentStatusDuration, y=LoanStatus), data=loans)+
-  geom_point(alpha=1/20)+
+  geom_jitter(alpha=1/20)+
   ggtitle('Loan Status vs Employment Duration in Months')
 
 # employment duration appears to have an impact on deliquencies
 ```
+
 Slight correlation between employment duration and Gross Principalloss
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, COR-LoanStatus_EmploymentDuration}
+```{r echo=FALSE, message=FALSE, warning=FALSE, CLoanStatus_EmploymentDuration}
 
 cor.test(loans$LP_GrossPrincipalLoss, loans$EmploymentStatusDuration)
 ```
-```{r echo=FALSE, message=FALSE, warning=FALSE, LoanStatus_EmploymentDuration-point}
-ggplot(aes(x=EmploymentStatusDuration, y=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'))+
-  geom_point(na.rm = TRUE)+
-  ggtitle('Gross Principal Loss vs Employment Status Duration for Charged-off Loans')
 
+Appears to be correlated such that an increse in employment
+duration leads to higher Gross Principal Loss!!?
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, LoanStat-EmploymentDur-point}
+ggplot(aes(x=EmploymentStatusDuration, y=LP_GrossPrincipalLoss), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
+  geom_point(alpha=1/15, size=1, na.rm = TRUE)+
+  geom_smooth(method = "lm", se = FALSE,size=1) +
+    scale_y_log10()
+  ggtitle('Gross Principal Loss vs Employment Duration for Charged-off Loans')
+
+# appears to be correlated such that an increse in employment
+# duration leads to higher Gross Loss!!?
 ```
 
 Evaluate Home Owners from Non-homeowners
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, IsBorrowerHomeowner-jitter}
-R1<-ggplot(aes(x=IsBorrowerHomeowner, y=LP_GrossPrincipalLoss), data=subset(loans, IsBorrowerHomeowner=='True'))+
+R1<-ggplot(aes(x=IsBorrowerHomeowner, y=LP_GrossPrincipalLoss), 
+           data=subset(loans, IsBorrowerHomeowner=='True'))+
   geom_jitter(alpha=1/20)+
   ggtitle('Gross Principal Loss vs Homeowners')
 
-R2<-ggplot(aes(x=IsBorrowerHomeowner, y=LP_GrossPrincipalLoss), data=subset(loans, IsBorrowerHomeowner=='False'))+
+R2<-ggplot(aes(x=IsBorrowerHomeowner, y=LP_GrossPrincipalLoss), 
+           data=subset(loans, IsBorrowerHomeowner=='False'))+
   geom_jitter(alpha=1/20)+
   ggtitle('Gross Principal Loss vs Non-Homeowners')
 
@@ -481,9 +549,9 @@ mean(subset(loans$LP_GrossPrincipalLoss, loans$IsBorrowerHomeowner=='False' & lo
 ```
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, LoanStatus_DelinquenciesPast7Years}
+```{r echo=FALSE, message=FALSE, warning=FALSE, LoanStat_DelinquenciesPast7Yrs}
 ggplot(aes(x=DelinquenciesLast7Years, y=LoanStatus), data=loans)+
-  geom_point(alpha=1/20)+
+  geom_jitter(alpha=1/20)+
   ggtitle('Loan Status vs Delinquencies past 7 years')
 
 
@@ -491,10 +559,32 @@ ggplot(aes(x=DelinquenciesLast7Years, y=LoanStatus), data=loans)+
 
 Evaluate if loss is correlated with Listing category
 
-The category of the listing that the borrower selected when posting their listing: 0 - Not Available, 1 - Debt Consolidation, 2 - Home Improvement, 3 - Business, 4 - Personal Loan, 5 - Student Use, 6 - Auto, 7- Other, 8 - Baby&Adoption, 9 - Boat, 10 - Cosmetic Procedure, 11 - Engagement Ring, 12 - Green Loans, 13 - Household Expenses, 14 - Large Purchases, 15 - Medical/Dental, 16 - Motorcycle, 17 - RV, 18 - Taxes, 19 - Vacation, 20 - Wedding Loans
+The category of the listing that the borrower selected when posting their listing: 
+  0 - Not Available, 
+  1 - Debt Consolidation, 
+  2 - Home Improvement, 
+  3 - Business, 
+  4 - Personal Loan, 
+  5 - Student Use, 
+  6 - Auto, 
+  7-  Other, 
+  8 - Baby&Adoption, 
+  9 - Boat, 
+  10 - Cosmetic Procedure, 
+  11 - Engagement Ring, 
+  12 - Green Loans, 
+  13 - Household Expenses, 
+  14 - Large Purchases, 
+  15 - Medical/Dental, 
+  16 - Motorcycle, 
+  17 - RV, 
+  18 - Taxes, 
+  19 - Vacation, 
+  20 - Wedding Loans
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, GrossPrincipalLoss}
-ggplot(aes(x=LP_GrossPrincipalLoss, y=ListingCategory..numeric.), data=subset(loans, LoanStatus=='Chargedoff'))+
+ggplot(aes(x=LP_GrossPrincipalLoss, y=ListingCategory..numeric.), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   # put alpha to 5% to better identify differences
   geom_point(alpha=1/20)+
   scale_y_continuous(limits=c(0,20), breaks=seq(0,20,1))+
@@ -503,8 +593,9 @@ ggplot(aes(x=LP_GrossPrincipalLoss, y=ListingCategory..numeric.), data=subset(lo
 #should be interesting to explore further.  Look at Debt Consolodation
 ```
 
-Replot Above graph by ratio.  There certainly seems to be some telling information
-based on the Listing Category.  Espeically 1-Debt Consolidation, 3-Business and 7-Other.
+Replot Above graph by ratio.  There certainly seems to be some telling 
+information based on the Listing Category.  Espeically 1-Debt 
+Consolidation, 3-Business and 7-Other.
 
 
 
@@ -525,7 +616,8 @@ ggplot(aes(x=LP_GrossPrincipalLoss/(sum(loans$LP_GrossPrincipalLoss)),
 We might be on to something by looking at Listing Category
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Facet-GrossPrincipalLossRatio}
-ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'))+
+ggplot(aes(x=LP_GrossPrincipalLoss), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_histogram()+
   facet_wrap(~ListingCategory..numeric.)+
   scale_x_continuous(limits=c(0,8000), breaks=seq(0,8000,4000))+
@@ -539,8 +631,10 @@ Certainly we should explore this above data set further
 Lets look at Credit Score
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, CreditScoreRange-Loss}
-ggplot(aes(x=LP_GrossPrincipalLoss, y=CreditScoreRangeUpper), data=subset(loans, LoanStatus=='Chargedoff'))+
-  geom_line(alpha=1/2)+
+ggplot(aes(x=LP_GrossPrincipalLoss, y=CreditScoreRangeUpper), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
+  geom_jitter(alpha=1/20)+
+  geom_smooth()+
   ggtitle('Credit Score by Gross Principal Loss')
 
 ```
@@ -556,8 +650,8 @@ mean(subset(loans$LP_GrossPrincipalLoss, loans$CreditScoreRangeUpper>700 & loans
 median(subset(loans$LP_GrossPrincipalLoss, loans$CreditScoreRangeUpper<=700 & loans$LP_GrossPrincipalLoss>0))
 mean(subset(loans$LP_GrossPrincipalLoss, loans$CreditScoreRangeUpper<=700 & loans$LP_GrossPrincipalLoss>0))
 
-# there is a correlation between charge-offs and losses but it is the HIGHER credit scores which have 
-# larger losses.  Perhaps because higher credit scores get higher loans.
+# there is a correlation between charge-offs and losses but it is the HIGHER credit scores 
+# which have larger losses.  Perhaps because higher credit scores get higher loans.
 
 ```
 
@@ -576,18 +670,20 @@ borrowers with good credit disproportionately because they were able to
 have a larger amount of loans.  
 
 ### Interesting relationships between the other features 
-I thought there would be a clear relationship between the percentage of the loan
-funded and Charge-offs.  There was not.  Likewise, I believed that if a borrower
-had a loan partially funded from a friend, then they would be less likely to 
-default because their friend would lose money.  This relationship did not hold.
+I thought there would be a clear relationship between the percentage of the 
+loan funded and Charge-offs.  There was not.  Likewise, I believed that if 
+a borrower had a loan partially funded from a friend, then they would be 
+less likely to default because their friend would lose money.  
+This relationship did not hold.
 
 I believed there would be less chance of a charge-off if the borrower was a 
 homeowner.  This too proved invalid.  This might be due to the Great Recession
 when home values dipped below the loan value for many home owners.  
 
-I was happy to find a negative correlation between employment status and Charge-
-off such that the longer tenured employees had less losses.  The correlation was
--0.03622925 Not strongly correlated, but correlated nonetheless.
+I was happy to find a negative correlation between employment status and 
+Charge-off such that the longer tenured employees had less losses.  
+The correlation was -0.03622925 Not strongly correlated, but correlated 
+nonetheless.
 
 ### Strongest relationship found?
 Of the variables I reviewed, the strongest correlations was in the Listing
@@ -601,7 +697,8 @@ Clearly we need to examine 1-Debt Consolidation, 3-Business and 7-Other loans
 more deeply.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots}
-ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'))+
+ggplot(aes(x=LP_GrossPrincipalLoss), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_freqpoly(color='blue')+
   facet_wrap(~ListingCategory..numeric.)+
   scale_x_continuous(limits=c(0,8000), breaks=seq(0,8000,4000))+
@@ -609,15 +706,51 @@ ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'
 
 ```
 
+Higher Stated Mo. Income seemed to get a Lower APR--
+  makes sense.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, BorrowerChar}
+ggplot(aes(x = BorrowerAPR, 
+           y = StatedMonthlyIncome  , color =  LoanStatus), 
+        data=subset(loans, (StatedMonthlyIncome < 11000) & 
+                      (LoanStatus != ""))) +
+      geom_point(alpha = 1/50, size = 2) +
+      geom_smooth(method = "lm", se = FALSE,size=2)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='LoanStatus'))+
+  ggtitle('Stated Mo. Inc. vs Borrower APR by Loan Stat')
+```
+
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, BorrowerChar-inc}
+
+# make state mo income buckets
+loans$StatedMonthlyIncome.bucket = cut(loans$StatedMonthlyIncome,
+                            c( 0, 3200, 4667, 5608 ,   6825, 1750000))
+
+ggplot(aes(x = StatedMonthlyIncome.bucket,
+           y = LP_GrossPrincipalLoss), 
+           data=subset(loans, (StatedMonthlyIncome < 11000) & 
+                      (EmploymentStatus != "" |
+                         EmploymentStatus != "Not available" ))) + 
+   geom_boxplot(aes(alpha=1/30, fill = EmploymentStatus) )   +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ggtitle('Gross Prin Loss by Stated Mo Inc (bucketed)')
+```
+
+
 Drop all graphs except 1, 3 and 7 and include Employment Status
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, EmploymentStat-DebitConsolodation}
+```{r echo=FALSE, message=FALSE, warning=FALSE, EmplymntStat-DebtConsolodation}
 ggplot(aes(x=LP_GrossPrincipalLoss, 
            y=EmploymentStatusDuration), 
-            data=subset(loans, ListingCategory..numeric.=='1' & LP_GrossPrincipalLoss>0))+
+            data=subset(loans, ListingCategory..numeric.=='1' & 
+                          LP_GrossPrincipalLoss>0))+
   geom_point(color='red')+
   stat_smooth(method='lm')+
-  ggtitle('Employment Stat Duration in Mo vs Gross Principal Loss for Debt Consolodation Loan')
+  ggtitle('Employment Stat Dur. in Mo vs Gross Prin Loss for Debt Consol-Loan')
 
 
 ```
@@ -628,10 +761,11 @@ ggplot(aes(x=LP_GrossPrincipalLoss,
 
 ggplot(aes(x=LP_GrossPrincipalLoss, 
            y=EmploymentStatusDuration), 
-            data=subset(loans, ListingCategory..numeric.=='3' & LP_GrossPrincipalLoss>0))+
+            data=subset(loans, ListingCategory..numeric.=='3' & 
+                          LP_GrossPrincipalLoss>0))+
   geom_point(color='blue')+
   stat_smooth(method='lm')+
-  ggtitle('Employment Stat Duration in Mo vs Gross Principal Loss for Business Loan')
+  ggtitle('Employment Stat Duration in Mo vs Gross Prin Loss for Bus. Loan')
 
 ```
 
@@ -644,6 +778,7 @@ ggplot(aes(x=LP_GrossPrincipalLoss,
   ggtitle('Employment Stat Duration in Mo vs Gross Principal Loss for OTHER Loan')
 
 ```
+
 From the above three graphs, which separate out Employment Status Duration for 
 each of the more problematic ListingCategories, there does not appear to be 
 a clear reason to pair Employment Status Duration with ListingCategories.
@@ -684,7 +819,9 @@ cor.test(loans$LP_GrossPrincipalLoss, loans$OtherLoan)
 
 ```
 
-
+Look at amount of loss by Big 3 Loss Categories
+It appears OTHER may have more loans but Debt
+Consolodation and Business Loan have greater losses.
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate-ListingCat}
@@ -698,7 +835,8 @@ ggplot(aes(x=LP_GrossPrincipalLoss), data=loans) +
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, gridArrange-Compare}
 # graph debtconsolodation by itself
-Q1<-ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, DebtConsolodation>0))+
+Q1<-ggplot(aes(x=LP_GrossPrincipalLoss), 
+           data=subset(loans, DebtConsolodation>0))+
   geom_freqpoly()+
   ggtitle('# Debt Consolodation')
 
@@ -777,7 +915,8 @@ grid.arrange(V1, V2, V3, ncol=1)
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Addcolumns}
 
 # combine 3 loan types which were correlated with GrossPrincipal Loss
-loans$ThreeLoanTypes<-loans$DebtConsolodation+loans$BusinessLoan+loans$OtherLoan
+loans$ThreeLoanTypes<-loans$DebtConsolodation+
+  loans$BusinessLoan+loans$OtherLoan
 
 # determine correlation of new variable
 cor.test(loans$ThreeLoanTypes, loans$LP_GrossPrincipalLoss)
@@ -817,7 +956,8 @@ T3<-ggplot(aes(x=LP_GrossPrincipalLoss, y=LoanStatus),
 
 grid.arrange(T1, T2, T3, ncol=1)
 
-# IT sure appears that these 3 loan types were responsible for much of the losses
+# IT sure appears that these 3 loan types were responsible for much 
+# of the losses
 ```
 
 
@@ -831,9 +971,9 @@ the ListingCategory..numeric. of 'NA'.  I really excluded that as I am assuming
 the lender did not know the listing type at the time of the loan therefore
 we can not use that as a factor in predicting a charge-off
 
-Each of the three loan types, however were correlated with Charge-offs individually.
-Debt Consolodation had the strongest correlation at 0.551891.
-Business was next at 0.3672464.
+Each of the three loan types, however were correlated with Charge-offs 
+individually. Debt Consolodation had the strongest correlation at 
+0.551891. Business was next at 0.3672464.  
 Other was the least at 0.2208403
 
 
@@ -861,41 +1001,42 @@ would like them left that way.
 
 
 ### Plot One
-```{r echo=FALSE, Plot_One}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One}
 # look at Ratio rather than absolute loss to ensure charge-off amount matters
 ggplot(aes(x=100*(LP_GrossPrincipalLoss/(sum(loans$LP_GrossPrincipalLoss))), 
            y=ListingCategory..numeric.), 
        data=subset(loans, LoanStatus=='Chargedoff'))+
-  geom_point()+
+  geom_point(alpha=1/30)+
   scale_y_continuous(limits=c(0,20), breaks=seq(0,20,1))+
   scale_x_continuous(limits=c(0,0.0350))+
   ylab('Listing Category')+
-  xlab('Ratio of Individual Loan Gross Principal Loss divided by total Gross Principal Loss')+
+  xlab('Ratio of Individual Loan G. Principal Loss/total G. Principal Loss')+
   ggtitle('Listing Category by Gross Principal Loss Ratio')
 
 ```
 
 ### Description One
 This plots the ratio of each individual loan charge-off as a percentage of the 
-total Charged-off in a point plot by Listing Category.  As you can see the darkest
-lines are for Listing Categories 0 (NA), 1(Business) and 7 (Other).  I included this
-plot because it was one of the first plots which allowed me to identify a variable
-which could be tightly correlated to Charge-offs.  
+total Charged-off in a point plot by Listing Category.  As you can see the 
+darkest lines are for Listing Categories 0 (NA), 1(Business) and 7 (Other).
+I included this plot because it was one of the first plots which allowed me
+to identify a variable which could be tightly correlated to Charge-offs.  
 
-You can see from the darkness of teh line next to the 4 above listing categories 
-that not only do they have the most data points but those data points tend to
-be on the larger end of the x Axis as well.
+You can see from the darkness of the line next to the 4 above listing 
+categories that not only do they have the most data points but those 
+data points tend to be on the larger end of the x Axis as well.
 
-I originaly had alpha = to 5% but in the remake of this, I deleted it and liked 
-it better with the darker points.  I also made it clear that each point was a loan
-which was charged off and each represented a % of the total charged-off
+Each point was a loan which was charged off
+and each represented a % of the total charged-off
 
 ### Plot Two
-```{r echo=FALSE, Plot_Two}
-ggplot(aes(x=LP_GrossPrincipalLoss), data=subset(loans, LoanStatus=='Chargedoff'))+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
+ggplot(aes(x=LP_GrossPrincipalLoss), 
+       data=subset(loans, LoanStatus=='Chargedoff'))+
   geom_freqpoly(color='blue')+
   facet_wrap(~ListingCategory..numeric.)+
   scale_x_continuous(limits=c(0,8000), breaks=seq(0,8000,4000))+
+  xlab('Gross Principal Loss $USD')
   ggtitle('Number of Charge-offs by Amount separated by Listing Category')
 
 ```
@@ -911,7 +1052,7 @@ share of the charge-offs.
 
 
 ### Plot Three
-```{r echo=FALSE, Plot_Three}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
 
 # graph DebtConsolodation, BusinessLoan and OtherLoan combined
 W1<-ggplot(aes(x=LP_GrossPrincipalLoss), 
@@ -919,7 +1060,7 @@ W1<-ggplot(aes(x=LP_GrossPrincipalLoss),
                          DebtConsolodation>0 |
                          BusinessLoan>0))+
   geom_freqpoly()+
-  xlab('Charge-offs')+
+  xlab('Charge-offs in $USD')+
   ggtitle('Charge-offs for loan types 1, 3 & 7')
 
 # graph all loan types except above 3 categories and NA
@@ -930,7 +1071,7 @@ W2<-ggplot(aes(x=LP_GrossPrincipalLoss),
                          ListingCategory..numeric.!='7' &
                          LP_GrossPrincipalLoss>0))+
   geom_freqpoly()+
-  xlab('Charge-offs')+
+  xlab('Charge-offs in $USD')+
   ggtitle('Charge-offs excluding categories 0,1,3 and 7')
 
 # graph NA
@@ -938,7 +1079,7 @@ W3<-ggplot(aes(x=LP_GrossPrincipalLoss),
            data=subset(loans, ListingCategory..numeric.=='0' &
             LP_GrossPrincipalLoss>0))+
   geom_freqpoly()+
-  xlab('Charge-offs')+
+  xlab('Charge-offs in $USD')+
   ggtitle('Charge-offs for loan category NA')
 
 grid.arrange(W1, W2, W3, ncol=1)
@@ -968,12 +1109,25 @@ to Charge-offs.  This was not frustrating but made my task more
 difficult.  It was very surprising, for example, that the Charge-offs
 were not correlated to the borrowers CreditScore.  
 
-It was interesting too that I could get a feel for the lona portfolio 
+It was interesting too that I could get a feel for the loan portfolio 
 from only the data.  I know for example that this is a high margin, 
 higher risk and higher return type portfolio.
 
 Finally, manipulating the data so that we get a count when we want the
 number of items in a column and amount when we want to add the values 
-in a column can be very difficult.  Please contact me at 
-kenm@eurekapayments.com for further questions or comments.
+in a column can be very difficult.  
+
+If I was to provide input to this lender, and had more time to so
+so I would want to try to find out what else correlates with the 
+three Listing Categories which would identify a probability for 
+a charge-off.  For example, if I was to look at OnTimeProsper-
+Payments or CurrentDelinquencies, might these have have 
+strengthened my correlation to better identify which loans 
+would likely charge-off.  Further, I would have liked to further
+explore loan amounts within my stated hypothesis.  For example,
+would a smaller loan or larger loan more likely lead to a charge-
+off within the loan categories identified?
+
+Please contact me at kenm@eurekapayments.com for further 
+questions or comments.
 
